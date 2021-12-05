@@ -1,9 +1,9 @@
 enum TypeUser {
-  NONE,
-  GOOGLE,
-  FACEBOOK,
-  TWITTER,
-  TELEPHONE,
-  APPLE,
-  MICROSOFT
+    NONE,
+    GOOGLE,
+    FACEBOOK,
+    TWITTER,
+    TELEPHONE,
+    APPLE,
+    MICROSOFT
 }

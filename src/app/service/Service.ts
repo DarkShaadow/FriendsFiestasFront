@@ -1,16 +1,15 @@
 import {Subject} from "rxjs";
 
 export class Service<T> {
-  protected url = "http://localhost:8080/";
+    subjectList = new Subject<T[]>();
+    protected url = "http://localhost:8080/";
+    protected list: T[] = [];
 
-  protected list: T[] = [];
-  subjectList = new Subject<T[]>();
+    constructor(private urlApi: string) {
+        this.url = this.url + urlApi;
+    }
 
-  constructor(private urlApi : string) {
-    this.url = this.url + urlApi;
-  }
-
-  emit() {
-    this.subjectList.next(this.list.slice());
-  }
+    emit() {
+        this.subjectList.next(this.list.slice());
+    }
 }

@@ -1,5 +1,5 @@
 enum Presence {
-  OUI,
-  INDECIS,
-  NON
+    OUI,
+    INDECIS,
+    NON
 }
