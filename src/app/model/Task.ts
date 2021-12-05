@@ -2,7 +2,7 @@ import {User} from "./User";
 
 export class Task {
   constructor(public id : number,
-              public content : string,
+              public description : string,
               public affectedUser : User) {
   }
 }
