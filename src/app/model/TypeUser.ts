@@ -1,4 +1,4 @@
-enum TypeUser {
+export enum TypeUser {
     NONE,
     GOOGLE,
     FACEBOOK,

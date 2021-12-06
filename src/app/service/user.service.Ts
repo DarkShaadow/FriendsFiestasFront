@@ -11,6 +11,8 @@ export class UserService extends Service<User> {
 
     constructor(private httpClient: HttpClient) {
         super("api/v1/friends-fiestas/users");
+
+        console.log("User service : " + this.url);
     }
 
     findAll() {
@@ -34,8 +36,14 @@ export class UserService extends Service<User> {
     async login(user: User): Promise<ApiResponse<any> | undefined> {
         return await this.httpClient.post<ApiResponse<any>>(this.url + "/login", {
             "pseudo": user.pseudo,
-            "email": user.email,
             "password": user.password
+        }).toPromise();
+    }
+
+    async loginTest(): Promise<ApiResponse<any> | undefined> {
+        return await this.httpClient.post<ApiResponse<any>>(this.url + "/login", {
+            "pseudo": "Wamuu",
+            "password": "motdepasse"
         }).toPromise();
     }
 }

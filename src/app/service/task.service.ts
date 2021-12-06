@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Service} from "./Service";
 import {Task} from "../model/Task";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {ApiResponse} from "../model/ApiResponse";
 
 @Injectable({

@@ -1,11 +1,93 @@
 <div class="container main-container">
-    <div class="container col-lg-3">
-        <img src = "../../../assets/image/title.png" width="100%"/>
+    <div class="container col-lg-3 menu-gauche">
+        <img src="../../../assets/image/title.png" width="100%" alt="title"/>
+        <div class="container profile col-lg-12">
+            profile
+        </div>
+        <div class="container col-lg-10">
+            Salon
+        </div>
+        <div class="container col-lg-2 btn">
+            +
+        </div>
+        <div class="list-group vraie-liste-salon col-lg-12">
+            <div class="list-group-item col-lg-12 btn">
+                Salon 1
+            </div>
+            <div class="list-group-item col-lg-12 btn">
+                Salon 2
+            </div>
+            <div class="list-group-item col-lg-12 btn">
+                Salon 3
+            </div>
+        </div>
+        <div class="container col-lg-12">
+            <div class="container col-lg-6 btn" (click)="onLogin()">
+                Connexion
+            </div>
+            <div class="container col-lg-6 btn" (click)="onClick()">
+                Déconnexion
+            </div>
+        </div>
     </div>
-    <div class="container col-lg-6">
-
+    <div class="container col-lg-6 menu-central">
+        <img src="" class="col-lg-12" alt="Image du serve"/>
+        <div class="container tchat col-lg-12">
+            Tchat
+        </div>
     </div>
-    <div class="container col-lg-3">
+    <div class="container col-lg-3 menu-droite">
+        <div class="container col-lg-6">
 
+        </div>
+        <div class="container col-lg-6">
+
+        </div>
+        <div class="container col-lg-12 choix-presence">
+            Êtes-vous présent pour l'évènement
+            <div class="container col-lg-4 btn-success">
+                Oui
+            </div>
+            <div class="container col-lg-4 btn-warning">
+                Peut-être
+            </div>
+            <div class="container col-lg-4 btn-danger">
+                Non
+            </div>
+        </div>
+        <div class="container col-lg-10">
+            Invités
+        </div>
+        <div class="container col-lg-2 btn">
+            +
+        </div>
+        <div class="list-group col-lg-12 invite">
+            <div class="list-group-item col-lg-12 btn">
+                Invité 1
+            </div>
+            <div class="list-group-item col-lg-12 btn">
+                Invité 2
+            </div>
+            <div class="list-group-item col-lg-12 btn">
+                Invité 3
+            </div>
+        </div>
+        <div class="container col-lg-10">
+            Liste des tâches
+        </div>
+        <div class="container col-lg-2 btn">
+            +
+        </div>
+        <div class="list-group col-lg-12 invite">
+            <div class="list-group-item col-lg-12 btn">
+                Tache 1
+            </div>
+            <div class="list-group-item col-lg-12 btn">
+                Tache 2
+            </div>
+            <div class="list-group-item col-lg-12 btn">
+                Tache 3
+            </div>
+        </div>
     </div>
 </div>
