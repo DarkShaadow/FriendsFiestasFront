@@ -14,7 +14,7 @@ export class UserService extends Service<Task> {
     }
 
     findAll() {
-        this.httpClient.get<ApiResponse<Task[]>>(this.url)
+        this.httpClient.get<ApiResponse>(this.url)
             .subscribe(
                 (response) => {
                     this.list = response.data;
@@ -23,12 +23,12 @@ export class UserService extends Service<Task> {
             )
     }
 
-    async getById(id: number): Promise<ApiResponse<Task> | undefined> {
-        return await this.httpClient.get<ApiResponse<Task>>(this.url + "/" + id.toString()).toPromise();
+    async getById(id: number): Promise<ApiResponse | undefined> {
+        return await this.httpClient.get<ApiResponse>(this.url + "/" + id.toString()).toPromise();
     }
 
-    async update(task: Task): Promise<ApiResponse<Task> | undefined> {
-        return await this.httpClient.put<ApiResponse<Task>>(this.url + "/modifier/" + task.id, {
+    async update(task: Task): Promise<ApiResponse | undefined> {
+        return await this.httpClient.put<ApiResponse>(this.url + "/modifier/" + task.id, {
             "description": task.description
         }).toPromise();
     }

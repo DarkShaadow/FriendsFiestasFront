@@ -17,21 +17,31 @@ export class SalonService extends Service<Salon> {
     }
 
     findAll() {
-        this.httpClient.get<ApiResponse<Salon[]>>(this.url)
+        this.httpClient.get<ApiResponse>(this.url + "/")
             .subscribe(
                 (response) => {
-                    this.list = response.data;
+                    this.list = response.data?.salons;
                     this.emit();
                 }
             )
     }
 
-    async getById(id: number): Promise<ApiResponse<Salon> | undefined> {
-        return await this.httpClient.get<ApiResponse<Salon>>(this.url + "/" + id.toString()).toPromise();
+    findAllSalonsByIdHost(id: number) {
+        this.httpClient.get<ApiResponse>(this.url + "/mes-salons/" + id.toString())
+            .subscribe(
+                (response) => {
+                    this.list = response.data?.salons;
+                    this.emit();
+                }
+            )
     }
 
-    async add(salon: Salon): Promise<ApiResponse<Salon> | undefined> {
-        return await this.httpClient.post<ApiResponse<Salon>>(this.url + "/ajouter", {
+    async getById(id: number): Promise<ApiResponse | undefined> {
+        return await this.httpClient.get<ApiResponse>(this.url + "/" + id.toString()).toPromise();
+    }
+
+    async add(salon: Salon): Promise<ApiResponse | undefined> {
+        return await this.httpClient.post<ApiResponse>(this.url + "/ajouter", {
             "name": salon.name,
             "adresse": salon.adresse,
             "description": salon.description,
@@ -41,8 +51,8 @@ export class SalonService extends Service<Salon> {
         }).toPromise();
     }
 
-    async update(salon: Salon): Promise<ApiResponse<Salon> | undefined> {
-        return await this.httpClient.put<ApiResponse<Salon>>(this.url + "/modifier/" + salon.id.toString(), {
+    async update(salon: Salon): Promise<ApiResponse | undefined> {
+        return await this.httpClient.put<ApiResponse>(this.url + "/modifier/" + salon.id.toString(), {
             "name": salon.name,
             "adresse": salon.adresse,
             "description": salon.description,

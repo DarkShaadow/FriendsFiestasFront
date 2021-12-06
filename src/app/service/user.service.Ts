@@ -16,7 +16,7 @@ export class UserService extends Service<User> {
     }
 
     findAll() {
-        this.httpClient.get<ApiResponse<User[]>>(this.url)
+        this.httpClient.get<ApiResponse>(this.url)
             .subscribe(
                 (response) => {
                     this.list = response.data;
@@ -25,23 +25,23 @@ export class UserService extends Service<User> {
             )
     }
 
-    async register(user: User): Promise<ApiResponse<any> | undefined> {
-        return await this.httpClient.post<ApiResponse<any>>(this.url + "/register", {
+    async register(user: User): Promise<ApiResponse | undefined> {
+        return await this.httpClient.post<ApiResponse>(this.url + "/register", {
             "pseudo": user.pseudo,
             "email": user.email,
             "password": user.password
         }).toPromise();
     }
 
-    async login(user: User): Promise<ApiResponse<any> | undefined> {
-        return await this.httpClient.post<ApiResponse<any>>(this.url + "/login", {
+    async login(user: User): Promise<ApiResponse | undefined> {
+        return await this.httpClient.post<ApiResponse>(this.url + "/login", {
             "pseudo": user.pseudo,
             "password": user.password
         }).toPromise();
     }
 
-    async loginTest(): Promise<ApiResponse<any> | undefined> {
-        return await this.httpClient.post<ApiResponse<any>>(this.url + "/login", {
+    async loginTest(): Promise<ApiResponse | undefined> {
+        return await this.httpClient.post<ApiResponse>(this.url + "/login", {
             "pseudo": "Wamuu",
             "password": "motdepasse"
         }).toPromise();

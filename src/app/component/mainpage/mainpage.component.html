@@ -11,14 +11,10 @@
             +
         </div>
         <div class="list-group vraie-liste-salon col-lg-12">
-            <div class="list-group-item col-lg-12 btn">
-                Salon 1
-            </div>
-            <div class="list-group-item col-lg-12 btn">
-                Salon 2
-            </div>
-            <div class="list-group-item col-lg-12 btn">
-                Salon 3
+            <div  *ngFor ="let salon of listSalon" class="list-group-item col-lg-12 btn" (click)="selectSalon(salon.id)">
+                {{ salon.name }}
+                <br />
+                {{ salon.description }}
             </div>
         </div>
         <div class="container col-lg-12">

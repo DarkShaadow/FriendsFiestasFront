@@ -14,7 +14,7 @@ export class UserService extends Service<Adresse> {
     }
 
     findAll() {
-        this.httpClient.get<ApiResponse<Adresse[]>>(this.url)
+        this.httpClient.get<ApiResponse>(this.url)
             .subscribe(
                 (response) => {
                     this.list = response.data;
@@ -23,20 +23,20 @@ export class UserService extends Service<Adresse> {
             )
     }
 
-    async getById(id: number): Promise<ApiResponse<Adresse> | undefined> {
-        return await this.httpClient.get<ApiResponse<Adresse>>(this.url + "/" + id.toString()).toPromise();
+    async getById(id: number): Promise<ApiResponse | undefined> {
+        return await this.httpClient.get<ApiResponse>(this.url + "/" + id.toString()).toPromise();
     }
 
-    async add(adresse: Adresse): Promise<ApiResponse<Adresse> | undefined> {
-        return await this.httpClient.post<ApiResponse<Adresse>>(this.url + "/ajouter", {
+    async add(adresse: Adresse): Promise<ApiResponse | undefined> {
+        return await this.httpClient.post<ApiResponse>(this.url + "/ajouter", {
             "street": adresse.street,
             "postalCode": adresse.postalCode,
             "city": adresse.city
         }).toPromise();
     }
 
-    async update(adresse: Adresse): Promise<ApiResponse<Adresse> | undefined> {
-        return await this.httpClient.put<ApiResponse<Adresse>>(this.url + "/modifier/" + adresse.id.toString(), {
+    async update(adresse: Adresse): Promise<ApiResponse | undefined> {
+        return await this.httpClient.put<ApiResponse>(this.url + "/modifier/" + adresse.id.toString(), {
             "street": adresse.street,
             "postalCode": adresse.postalCode,
             "city": adresse.city
