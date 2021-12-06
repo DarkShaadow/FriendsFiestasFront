@@ -3,6 +3,7 @@ import {SalonService} from "../../service/salon.service";
 import {UserService} from "../../service/user.service";
 import {Salon} from "../../model/Salon";
 import {Subscription} from "rxjs";
+import {Member} from "../../model/Member";
 
 @Component({
     selector: 'app-mainpage',
@@ -11,12 +12,16 @@ import {Subscription} from "rxjs";
 })
 export class MainpageComponent implements OnInit {
 
+    listTache: Task[];
     listSalon: Salon[];
+    listMembre: Member[];
     private salonSubscribe: Subscription;
 
     constructor(private salonService: SalonService,
                 private userService: UserService) {
+        this.listTache = [];
         this.listSalon = [];
+        this.listMembre = [];
         this.salonSubscribe = new Subscription();
     }
 
@@ -34,7 +39,8 @@ export class MainpageComponent implements OnInit {
         var id;
 
         if ((id = localStorage.getItem("id")) != null) {
-            this.salonService.findAllSalonsByIdHost(+id);
+//            this.salonService.findAllSalonsByIdHost(+id);
+            this.salonService.findAll();
         }
     }
     selectSalon(id: number) {

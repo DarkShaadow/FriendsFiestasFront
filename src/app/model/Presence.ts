@@ -1,4 +1,4 @@
-enum Presence {
+export enum Presence {
     OUI,
     INDECIS,
     NON
