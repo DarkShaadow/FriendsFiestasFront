@@ -33,7 +33,7 @@ export class UserService extends Service<Task> {
         }).toPromise();
     }
 
-    delete(id: number) {
-        this.httpClient.delete(this.url + "/supprimer/" + id);
+    async delete(id: number) {
+        return await this.httpClient.delete(this.url + "/supprimer/" + id).toPromise();
     }
 }

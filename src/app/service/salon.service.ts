@@ -26,7 +26,7 @@ export class SalonService extends Service<Salon> {
             )
     }
 
-    findAllSalonsByIdHost(id: number) {
+    findAllSalonsByIdUser(id: number) { // FIXME A revoir
         this.httpClient.get<ApiResponse>(this.url + "/mes-salons/" + id.toString())
             .subscribe(
                 (response) => {
@@ -36,73 +36,75 @@ export class SalonService extends Service<Salon> {
             )
     }
 
-    async getById(id: number): Promise<ApiResponse | undefined> {
+    async getById(id: number) {
         return await this.httpClient.get<ApiResponse>(this.url + "/" + id.toString()).toPromise();
     }
 
-    async add(salon: Salon): Promise<ApiResponse | undefined> {
+    async add(salon: Salon) {
         return await this.httpClient.post<ApiResponse>(this.url + "/ajouter", {
             "name": salon.name,
-            "adresse": salon.adresse,
+            "addressEvent": salon.addressEvent,
             "description": salon.description,
             "host": salon.host.id,
             "dateEvent": salon.dateEvent,
-            "coverImage": salon.coverImage
+            "tasks": salon.tasks,
+            "members": salon.members
         }).toPromise();
     }
 
-    async update(salon: Salon): Promise<ApiResponse | undefined> {
+    async update(salon: Salon) {
         return await this.httpClient.put<ApiResponse>(this.url + "/modifier/" + salon.id.toString(), {
             "name": salon.name,
-            "adresse": salon.adresse,
+            "addressEvent": salon.addressEvent,
             "description": salon.description,
             "host": salon.host.id,
             "dateEvent": salon.dateEvent,
-            "coverImage": salon.coverImage
+            "tasks": salon.tasks,
+            "members": salon.members
         }).toPromise();
     }
 
-    delete(id: number) {
-        this.httpClient.delete(this.url + "/supprimer/" + id.toString());
+    async delete(id: number) {
+        return await this.httpClient.delete(this.url + "/supprimer/" + id.toString()).toPromise();
     }
 
-    ajouterAdresse(salon: Salon, adresse: Adresse) {
-        this.httpClient.post(this.url + "/" + salon.id + "/ajouter-adresse", {
+    async ajouterAdresse(idSalon: number, adresse: Adresse) {
+        return await this.httpClient.post(this.url + "/" + idSalon.toString() + "/ajouter-adresse", {
             "street": adresse.street,
             "postalCode": adresse.postalCode,
             "city": adresse.city
-        });
+        }).toPromise();
     }
 
-    updateAdresse(salon: Salon, adresse: Adresse) {
-        this.httpClient.put(this.url + "/" + salon.id + "/modifier-adresse/" + adresse.id, {
+    async updateAdresse(salon: Salon, adresse: Adresse) {
+        return await this.httpClient.put(this.url + "/" + salon.id + "/modifier-adresse/" + adresse.id, {
             "street": adresse.street,
             "postalCode": adresse.postalCode,
             "city": adresse.city
-        });
+        }).toPromise();
     }
 
-    ajouterTask(salon: Salon, task: Task) {
-        this.httpClient.post(this.url + "/" + salon.id + "/ajouter-tache", {
+    async ajouterTask(salon: Salon, task: Task) {
+        return await this.httpClient.post(this.url + "/" + salon.id + "/ajouter-tache", {
             "description": task.description
-        });
+        }).toPromise();
     }
 
-    ajouterMemberToSalon(salon: Salon, userId: number) {
-        this.httpClient.get(this.url + "/" + salon.id + "/ajouter-membre/" + userId, {});
+    async ajouterMemberToSalon(salon: Salon, userId: number) {
+        return await this.httpClient.get(this.url + "/" + salon.id + "/ajouter-membre/" + userId, {}).toPromise();
     }
 
-    validerTache(salon: Salon, user: User, task: Task) {
-        this.httpClient.put(this.url + "/" + salon.id + "/membre/" + user.id + "/valider-tache/" + task.id, {});
+    async validerTache(salon: Salon, user: User, task: Task) {
+        return await this.httpClient.put(this.url + "/" + salon.id + "/membre/" + user.id + "/valider-tache/" + task.id, {}).toPromise();
     }
 
-    affectMemberToTask(salon: Salon, user: User, task: Task) {
-        this.httpClient.get(this.url + "/" + salon.id + "/taches/" + task.id + "/membre/" + user.id);
+    async affectMemberToTask(salon: Salon, user: User, task: Task) {
+        return await this.httpClient.get(this.url + "/" + salon.id + "/taches/" + task.id + "/membre/" + user.id).toPromise();
     }
 
-    addMessage(salon: Salon, user: User, message: string) {
-        this.httpClient.post(this.url + "/" + salon.id + "/membre/" + user.id + "/ajouter-message", {
+    async addMessage(salon: Salon, user: User, message: string) {
+        return await this.httpClient.post(this.url + "/" + salon.id + "/membre/" + user.id + "/ajouter-message", {
             "message": message
-        });
+        }).toPromise();
     }
 }

@@ -7,7 +7,7 @@ import {ApiResponse} from "../model/ApiResponse";
 @Injectable({
     providedIn: 'root'
 })
-export class UserService extends Service<Adresse> {
+export class AdresseService extends Service<Adresse> {
 
     constructor(private httpClient: HttpClient) {
         super("api/v1/friends-fiestas/adresses");
@@ -43,7 +43,7 @@ export class UserService extends Service<Adresse> {
         }).toPromise();
     }
 
-    delete(id: number) {
-        this.httpClient.delete(this.url + "/supprimer/" + id.toString());
+    async delete(id: number) {
+        return await this.httpClient.delete(this.url + "/supprimer/" + id.toString()).toPromise();
     }
 }

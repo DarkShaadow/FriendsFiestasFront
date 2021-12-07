@@ -16,16 +16,16 @@ export class UserService extends Service<User> {
     }
 
     findAll() {
-        this.httpClient.get<ApiResponse>(this.url)
+        this.httpClient.get<ApiResponse>(this.url + "/")
             .subscribe(
                 (response) => {
-                    this.list = response.data;
+                    this.list = response?.data.users;
                     this.emit();
                 }
             )
     }
 
-    async register(user: User): Promise<ApiResponse | undefined> {
+    async register(user: User) {
         return await this.httpClient.post<ApiResponse>(this.url + "/register", {
             "pseudo": user.pseudo,
             "email": user.email,
@@ -33,17 +33,10 @@ export class UserService extends Service<User> {
         }).toPromise();
     }
 
-    async login(user: User): Promise<ApiResponse | undefined> {
+    async login(user: User) {
         return await this.httpClient.post<ApiResponse>(this.url + "/login", {
             "pseudo": user.pseudo,
             "password": user.password
-        }).toPromise();
-    }
-
-    async loginTest(): Promise<ApiResponse | undefined> {
-        return await this.httpClient.post<ApiResponse>(this.url + "/login", {
-            "pseudo": "Wamuu",
-            "password": "motdepasse"
         }).toPromise();
     }
 }

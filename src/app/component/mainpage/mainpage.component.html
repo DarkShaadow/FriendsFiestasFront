@@ -1,38 +1,124 @@
 <div class="container main-container">
     <div class="container col-lg-3 menu-gauche">
         <img src="../../../assets/image/title.png" width="100%" alt="title"/>
-        <div class="container profile col-lg-12">
+        <div *ngIf="connected === true" class="container profile col-lg-12">
             profile
         </div>
-        <div class="container col-lg-10">
+        <div *ngIf="connected === true" class="container col-lg-10">
             Salon
         </div>
-        <div class="container col-lg-2 btn">
+        <div *ngIf="connected === true" class="container col-lg-2 btn" (click)="createSalon()">
             +
         </div>
-        <div class="list-group vraie-liste-salon col-lg-12">
-            <div  *ngFor ="let salon of listSalon" class="list-group-item col-lg-12 btn" (click)="selectSalon(salon.id)">
+        <div *ngIf="connected === true" class="list-group vraie-liste-salon col-lg-12">
+            <div *ngFor="let salon of listSalon" class="list-group-item col-lg-12 btn" (click)="selectSalon(salon.id)">
                 {{ salon.name }}
-                <br />
+                <br/>
                 {{ salon.description }}
             </div>
         </div>
-        <div class="container col-lg-12">
-            <div class="container col-lg-6 btn" (click)="onLogin()">
+        <div *ngIf="connected === false" class="container col-lg-12">
+            <div class="container col-lg-6 btn" (click)="connexion()">
                 Connexion
             </div>
-            <div class="container col-lg-6 btn" (click)="onClick()">
+            <div class="container col-lg-6 btn" (click)="register()">
+                Créer un compte
+            </div>
+        </div>
+        <div *ngIf="connected === true" class="container col-lg-12">
+            <div class="container col-lg-12 btn" (click)="deconnexion()">
                 Déconnexion
             </div>
         </div>
     </div>
-    <div class="container col-lg-6 menu-central">
+    <div *ngIf="showingConnection === true" class="container col-lg-6 menu-central">
+        <form [formGroup]="connexionForm" (ngSubmit)="onConnexion()">
+            <div class="form-group">
+                <label for="pseudo">Pseudo</label>
+                <input type="text" class="form-control" id="pseudo" formControlName="pseudo">
+            </div>
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input type="password" class="form-control" id="password" formControlName="password">
+            </div>
+            <button type="submit" class="btn btn-primary">Connexion</button>
+        </form>
+    </div>
+    <div *ngIf="showingRegistration === true" class="container col-lg-6 menu-central">
+        <form [formGroup]="registerForm" (ngSubmit)="onRegistration()">
+            <div class="form-group">
+                <label for="pseudo">Pseudo</label>
+                <input type="text" class="form-control" id="pseudo" formControlName="pseudo">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" class="form-control" id="email" formControlName="email">
+            </div>
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input type="password" class="form-control" id="password" formControlName="password">
+            </div>
+            <button type="submit" class="btn btn-primary">Connexion</button>
+        </form>
+    </div>
+    <div *ngIf="showingSalon === true" class="container col-lg-6 menu-central">
         <img src="" class="col-lg-12" alt="Image du serve"/>
         <div class="container tchat col-lg-12">
             Tchat
         </div>
     </div>
-    <div class="container col-lg-3 menu-droite">
+    <div *ngIf="showingSalon === false" class="container col-lg-6 menu-central">
+    </div>
+    <div *ngIf="creationSalon === true" class="container col-lg-6 menu-central">
+        <form [formGroup]="salonForm" (ngSubmit)="onCreateSalon()">
+            <div class="form-group">
+                <label for="name">Nom de la fiesta</label>
+                <input type="text" class="form-control" id="name" formControlName="name">
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" class="form-control" id="description" formControlName="description">
+            </div>
+            <div class="form-group">
+                <label for="dateEvent">Date</label>
+                <input type="date" class="form-control" id="dateEvent" formControlName="dateEvent">
+            </div>
+            <div class="form-group">
+                <label for="street">Rue</label>
+                <input type="text" class="form-control" id="street" formControlName="street">
+            </div>
+            <div class="form-group">
+                <label for="postalCode">Code postal</label>
+                <input type="text" class="form-control" id="postalCode" formControlName="postalCode">
+            </div>
+            <div class="form-group">
+                <label for="city">Ville</label>
+                <input type="text" class="form-control" id="city" formControlName="city">
+            </div>
+            <button type="submit" class="btn btn-primary">Créer le salon</button>
+        </form>
+    </div>
+    <div *ngIf="creationTache === true" class="container col-lg-6 menu-central">
+        <form [formGroup]="tacheForm" (ngSubmit)="onCreateTache()">
+            <div class="form-group">
+                <label for="content">Description de la tâche</label>
+                <input type="text" class="form-control" id="content" formControlName="content">
+            </div>
+            <button type="submit" class="btn btn-primary">Créer la tâche</button>
+        </form>
+    </div>
+    <div *ngIf="ajoutMembre === true" class="container col-lg-6 menu-central">
+        <form [formGroup]="membreForm" (ngSubmit)="onAjouterMembre()">
+            <div class="form-group">
+                <label for="user">Utilisateur</label>
+                <select class="form-control" id="user" formControlName="user">
+                    <option *ngFor="let user of listUser" [value]="user.id">{{ user.pseudo }}</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Ajouter le membre</button>
+        </form>
+    </div>
+    <div *ngIf="showingMenuDroite() === true" class="container col-lg-3 menu-droite">
         <div class="container col-lg-6 carte">
 
         </div>
@@ -41,48 +127,40 @@
         </div>
         <div class="container col-lg-12 choix-presence">
             Êtes-vous présent pour l'évènement
-            <div class="container col-lg-4 btn-success">
-                Oui
-            </div>
-            <div class="container col-lg-4 btn-warning">
-                Peut-être
-            </div>
-            <div class="container col-lg-4 btn-danger">
-                Non
+            <div class="col-lg-12">
+
+                <div class="container col-lg-4 btn-success">
+                    Oui
+                </div>
+                <div class="container col-lg-4 btn-warning">
+                    Peut-être
+                </div>
+                <div class="container col-lg-4 btn-danger">
+                    Non
+                </div>
             </div>
         </div>
         <div class="container col-lg-10">
-            Invités
+            Membres
         </div>
-        <div class="container col-lg-2 btn">
+        <div *ngIf="amIHost()" class="container col-lg-2 btn" (click)="ajouterMembre()">
             +
         </div>
         <div class="list-group col-lg-12 invite">
-            <div class="list-group-item col-lg-12 btn">
-                Invité 1
-            </div>
-            <div class="list-group-item col-lg-12 btn">
-                Invité 2
-            </div>
-            <div class="list-group-item col-lg-12 btn">
-                Invité 3
+            <div *ngFor="let membre of listMembre" class="list-group-item col-lg-12">
+                {{ membre.user.pseudo }}
             </div>
         </div>
         <div class="container col-lg-10">
             Liste des tâches
         </div>
-        <div class="container col-lg-2 btn">
+        <div *ngIf="amIHost()" class="container col-lg-2" (click)="createTache()"
+             [ngClass]="{'btn': showingSalon === true}">
             +
         </div>
         <div class="list-group col-lg-12 invite">
-            <div class="list-group-item col-lg-12 btn">
-                Tache 1
-            </div>
-            <div class="list-group-item col-lg-12 btn">
-                Tache 2
-            </div>
-            <div class="list-group-item col-lg-12 btn">
-                Tache 3
+            <div *ngFor="let task of listTache" class="list-group-item col-lg-12">
+                {{ task.description }}
             </div>
         </div>
     </div>
