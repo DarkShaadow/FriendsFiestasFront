@@ -1,5 +1,5 @@
 export enum Presence {
     OUI,
-    INDECIS,
+    PEUT_ETRE,
     NON
 }

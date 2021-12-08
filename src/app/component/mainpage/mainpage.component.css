@@ -1,8 +1,31 @@
-/*div {
-    margin: 0;
-    border: 3px solid black;
-}*/
+.me {
+    background-color: rgba(13,160,175,0.21);
+    border: 1px solid aliceblue;
+    text-align: right;
+}
+
+.you {
+    background-color: rgba(186,176,178,0.21);
+    border: 1px solid aliceblue;
+    text-align: left;
+}
 
 .main-container {
     width: 100%;
+}
+
+.valide {
+    background-color: rgba(204,255,167,0.71);
+}
+
+.present {
+    background-color: rgba(147,255,96,0.71);
+}
+
+.indecis {
+    background-color: rgba(243,255,120,0.71);
+}
+
+.absent {
+    background-color: rgba(255,121,86,0.71);
 }

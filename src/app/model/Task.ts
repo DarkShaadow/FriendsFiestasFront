@@ -1,8 +1,9 @@
-import {User} from "./User";
+import {Member} from "./Member";
 
 export class Task {
     constructor(public id: number,
                 public description: string,
-                public affectedUser: User) {
+                public affectedMember: Member | undefined,
+                public done: boolean) {
     }
 }

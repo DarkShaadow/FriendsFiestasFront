@@ -11,11 +11,12 @@
             +
         </div>
         <div *ngIf="connected === true" class="list-group vraie-liste-salon col-lg-12">
-            <div *ngFor="let salon of listSalon" class="list-group-item col-lg-12 btn" (click)="selectSalon(salon.id)">
+            <button type="button" *ngFor="let salon of listSalon" class="list-group-item col-lg-12 btn btn-primary"
+                    (click)="selectSalon(salon.id)">
                 {{ salon.name }}
                 <br/>
                 {{ salon.description }}
-            </div>
+            </button>
         </div>
         <div *ngIf="connected === false" class="container col-lg-12">
             <div class="container col-lg-6 btn" (click)="connexion()">
@@ -62,10 +63,29 @@
         </form>
     </div>
     <div *ngIf="showingSalon === true" class="container col-lg-6 menu-central">
-        <img src="" class="col-lg-12" alt="Image du serve"/>
-        <div class="container tchat col-lg-12">
-            Tchat
+        <img src="../../../assets/image/fond.png" class="col-lg-12" alt="Image du serve"/>
+        <div class="container tchat col-lg-12" style="overflow: auto; height: 500px">
+            <div *ngFor="let msg of listMessage" class="col-lg-12" style="margin:0">
+                <div *ngIf="isMyMessage(msg) === true" class="container col-lg-2">
+                </div>
+                <div class="container col-lg-10" style="border-radius: 10px" [ngClass]="{'me': isMyMessage(msg) === true,
+                                                                                         'you': isMyMessage(msg) === false}">
+                    <span *ngIf="isMyMessage(msg) === false">
+                        {{ msg.user.pseudo }}
+                        <br />
+                    </span>
+                    <small class="text-muted">{{ msg.sendAt | date:'EEEE, MMMM d, h:mm' }}</small>
+                    <br />
+                    {{ msg.content }}
+                </div>
+            </div>
         </div>
+        <form [formGroup]="chatForm" (ngSubmit)="onSendMessage()" class="col-lg-6" style="position:fixed; bottom: 0">
+            <div class="form-group col-lg-10">
+                <input type="text" class="form-control" id="content" formControlName="content">
+            </div>
+            <button type="submit" class="btn btn-primary col-lg-2">envoyer</button>
+        </form>
     </div>
     <div *ngIf="showingSalon === false" class="container col-lg-6 menu-central">
     </div>
@@ -107,6 +127,17 @@
             <button type="submit" class="btn btn-primary">Créer la tâche</button>
         </form>
     </div>
+    <div *ngIf="affecteMembre === true" class="container col-lg-6 menu-central">
+        <form [formGroup]="affecteForm" (ngSubmit)="onAffecterMembre()">
+            <div class="form-group">
+                <label for="user">{{ tache.description }}</label>
+                <select class="form-control" id="user" formControlName="user">
+                    <option *ngFor="let membre of listMembre" [value]="membre.id">{{ membre.user.pseudo }}</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Affecter au membre</button>
+        </form>
+    </div>
     <div *ngIf="ajoutMembre === true" class="container col-lg-6 menu-central">
         <form [formGroup]="membreForm" (ngSubmit)="onAjouterMembre()">
             <div class="form-group">
@@ -119,13 +150,13 @@
         </form>
     </div>
     <div *ngIf="showingMenuDroite() === true" class="container col-lg-3 menu-droite">
-        <div class="container col-lg-6 carte">
+        <div class="container col-lg-6 carte" style="margin-bottom: 20px">
 
         </div>
-        <div class="container col-lg-6 calendrier">
+        <div class="container col-lg-6 calendrier" style="margin-bottom: 20px">
 
         </div>
-        <div class="container col-lg-12 choix-presence">
+        <div class="container col-lg-12 choix-presence" style="margin-bottom: 20px">
             Êtes-vous présent pour l'évènement
             <div class="col-lg-12">
 
@@ -146,8 +177,8 @@
         <div *ngIf="amIHost()" class="container col-lg-2 btn" (click)="ajouterMembre()">
             +
         </div>
-        <div class="list-group col-lg-12 invite">
-            <div *ngFor="let membre of listMembre" class="list-group-item col-lg-12">
+        <div class="list-group col-lg-12 invite" style="margin-bottom: 20px">
+            <div *ngFor="let membre of listMembre" class="list-group-item col-lg-12" >
                 {{ membre.user.pseudo }}
             </div>
         </div>
@@ -159,8 +190,18 @@
             +
         </div>
         <div class="list-group col-lg-12 invite">
-            <div *ngFor="let task of listTache" class="list-group-item col-lg-12">
-                {{ task.description }}
+            <div *ngFor="let task of listTache" class="list-group-item col-lg-12" [ngClass]="{'valide': task.done === true}">
+                <span class="col-lg-10" style="margin-top: 5px">
+                    {{ task.description }}
+                    <br />
+                    <small *ngIf="task.affectedMember != undefined && task.affectedMember != null" >{{ task.affectedMember.user.pseudo }}</small>
+                </span>
+                <span *ngIf="canIValidate(task)" class="btn btn-success col-lg-2" (click)="onValidateTask(task)">
+                    ✓
+                </span>
+                <span *ngIf="hasToAffect(task)" class="btn btn-success col-lg-2" (click)="affecterTache(task)">
+                    +
+                </span>
             </div>
         </div>
     </div>

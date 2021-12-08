@@ -26,14 +26,14 @@ export class SalonService extends Service<Salon> {
             )
     }
 
-    findAllSalonsByIdUser(id: number) { // FIXME A revoir
-        this.httpClient.get<ApiResponse>(this.url + "/mes-salons/" + id.toString())
+    findAllSalonsByIdUser(id: number) {
+        this.httpClient.get<ApiResponse>(this.url + "/" + id.toString() + "/tous-les-salons")
             .subscribe(
                 (response) => {
                     this.list = response.data?.salons;
                     this.emit();
                 }
-            )
+            );
     }
 
     async getById(id: number) {
@@ -94,17 +94,21 @@ export class SalonService extends Service<Salon> {
         return await this.httpClient.get(this.url + "/" + salon.id + "/ajouter-membre/" + userId, {}).toPromise();
     }
 
-    async validerTache(salon: Salon, user: User, task: Task) {
-        return await this.httpClient.put(this.url + "/" + salon.id + "/membre/" + user.id + "/valider-tache/" + task.id, {}).toPromise();
+    async validerTache(salon: Salon, idMembre: number, task: Task) {
+        return await this.httpClient.put(this.url + "/" + salon.id + "/membre/" + idMembre + "/valider-tache/" + task.id, {}).toPromise();
     }
 
-    async affectMemberToTask(salon: Salon, user: User, task: Task) {
-        return await this.httpClient.get(this.url + "/" + salon.id + "/taches/" + task.id + "/membre/" + user.id).toPromise();
+    async affectMemberToTask(salon: Salon, idMembre: number, task: Task) {
+        return await this.httpClient.get(this.url + "/" + salon.id + "/taches/" + task.id + "/membre/" +idMembre).toPromise();
     }
 
-    async addMessage(salon: Salon, user: User, message: string) {
-        return await this.httpClient.post(this.url + "/" + salon.id + "/membre/" + user.id + "/ajouter-message", {
-            "message": message
+    async addMessage(salon: Salon, idMembre: number, message: string) {
+        return await this.httpClient.post(this.url + "/" + salon.id + "/membre/" + idMembre.toString() + "/ajouter-message", {
+            "content": message
         }).toPromise();
+    }
+
+    async getTchat(salon: Salon) {
+        return await this.httpClient.get<ApiResponse>(this.url + "/" + salon.id + "/voir-messages").toPromise();
     }
 }

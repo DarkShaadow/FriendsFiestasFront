@@ -9,6 +9,8 @@ import {User} from "../../model/User";
 import {Task} from "../../model/Task";
 import {Adresse} from "../../model/Adresse";
 import {AdresseService} from "../../service/adresse.service";
+import {Message} from "../../model/Message";
+import {formatDate} from '@angular/common';
 
 @Component({
     selector: 'app-mainpage',
@@ -19,6 +21,7 @@ export class MainpageComponent implements OnInit {
 
     creationSalon: boolean;
     creationTache: boolean;
+    affecteMembre: boolean;
     ajoutMembre: boolean;
     showingRegistration: boolean;
     showingConnection: boolean;
@@ -27,16 +30,20 @@ export class MainpageComponent implements OnInit {
 
     connexionForm: FormGroup;
     registerForm: FormGroup;
+    affecteForm: FormGroup;
     membreForm: FormGroup;
     salonForm: FormGroup;
     tacheForm: FormGroup;
+    chatForm: FormGroup;
 
     salon: Salon;
+    tache: Task;
 
     listUser: User[];
     listTache: Task[] | undefined;
     listSalon: Salon[];
     listMembre: Member[] | undefined;
+    listMessage: Message[];
     private userSubscribe: Subscription;
     private salonSubscribe: Subscription;
 
@@ -46,6 +53,7 @@ export class MainpageComponent implements OnInit {
                 private formBuilder: FormBuilder) {
         this.creationSalon = false;
         this.creationTache = false;
+        this.affecteMembre = false;
         this.ajoutMembre = false;
         this.showingRegistration = false;
         this.showingConnection = false;
@@ -56,6 +64,7 @@ export class MainpageComponent implements OnInit {
         this.listTache = [];
         this.listSalon = [];
         this.listMembre = [];
+        this.listMessage = [];
         this.userSubscribe = new Subscription();
         this.salonSubscribe = new Subscription();
 
@@ -73,6 +82,12 @@ export class MainpageComponent implements OnInit {
             ),
             [],
             []
+        );
+        this.tache = new Task(
+            0,
+            "",
+            undefined,
+            false
         )
 
         this.connexionForm = this.formBuilder.group({
@@ -84,6 +99,9 @@ export class MainpageComponent implements OnInit {
             email: [""],
             password: [""]
         });
+        this.affecteForm = this.formBuilder.group({
+            user: []
+        })
         this.membreForm = this.formBuilder.group({
             user: []
         });
@@ -98,13 +116,17 @@ export class MainpageComponent implements OnInit {
         this.tacheForm = this.formBuilder.group({
             content: [""]
         });
+        this.chatForm = this.formBuilder.group({
+            content: [""]
+        });
+
+        this.refreshChat();
     }
 
     ngOnInit(): void {
         this.userSubscribe = this.userService.subjectList.subscribe(
             (users: User[]) => {
                 this.listUser = users;
-                console.log(users);
             }
         );
         this.salonSubscribe = this.salonService.subjectList.subscribe(
@@ -116,12 +138,20 @@ export class MainpageComponent implements OnInit {
         this.updateSalon();
     }
 
+    refreshChat() {
+
+        this.getTchat();
+        console.log("refresh");
+        setTimeout(this.refreshChat, 5000);
+    }
+
     resetSalon() {
         this.listTache = [];
         this.listMembre = [];
 
         this.creationTache = false;
         this.creationSalon = false;
+        this.affecteMembre = false;
         this.ajoutMembre = false;
         this.showingRegistration = false;
         this.showingConnection = false;
@@ -137,16 +167,30 @@ export class MainpageComponent implements OnInit {
     }
 
     selectSalon(id: number) {
+        this.updateSalon();
         this.resetSalon();
         this.showingSalon = true;
 
         this.listSalon.forEach(e => {
             if (e.id == id)
                 this.salon = e;
-        })
+        });
 
         this.listMembre = this.salon?.members;
         this.listTache = this.salon?.tasks;
+
+        this.getTchat();
+    }
+
+    getTchat() {
+        this.salonService.getTchat(this.salon).then(
+            e => {
+                this.listMessage = [];
+                e?.data.messages.forEach((elem: any) => {
+                    this.listMessage.push(new Message(elem[0], elem[1], elem[2], elem[3]));
+                });
+            }
+        );
     }
 
     createSalon() {
@@ -175,18 +219,10 @@ export class MainpageComponent implements OnInit {
 
         this.adresseService.add(newAdresse).then(
             e => {
-                console.log(e);
-
                 newSalon.addressEvent.id = e?.data.address.id;
-
-                console.log(newSalon);
 
                 this.salonService.add(newSalon).then(
                     e => {
-                        console.log("Inception");
-                        console.log(e);
-                        console.log("Inception");
-                        console.log(e?.data.salon.id);
                         this.salonService.ajouterAdresse(e?.data.salon.id, newAdresse).then(() => this.refresh());
                         this.connected = true;
                         this.refresh();
@@ -201,7 +237,8 @@ export class MainpageComponent implements OnInit {
         const newTache = new Task(
             0,
             formValue["content"],
-            this.getUser()
+            undefined,
+            false
         );
 
         this.salonService.ajouterTask(this.salon, newTache).then(
@@ -242,15 +279,19 @@ export class MainpageComponent implements OnInit {
 
         this.creationTache = false;
         this.creationSalon = false;
+        this.affecteMembre = false;
+        this.ajoutMembre = false;
         this.showingRegistration = false;
         this.showingConnection = false;
         this.showingSalon = false;
+    }
 
-        console.log("End refresh");
+    getSalonId() {
+        return this.salon.id;
     }
 
     showingMenuDroite() {
-        return (this.showingSalon || this.creationTache);
+        return (this.showingSalon || this.creationTache || this.ajoutMembre || this.affecteMembre);
     }
 
     onConnexion() {
@@ -264,7 +305,6 @@ export class MainpageComponent implements OnInit {
 
         this.userService.login(newUser).then(
             e => {
-                console.log(e);
                 localStorage.setItem("token", e?.data.user[1]["Jwt-Token"][0]);
                 localStorage.setItem("id", e?.data.user[0].id);
                 localStorage.setItem("pseudo", e?.data.user[0].pseudo);
@@ -292,7 +332,6 @@ export class MainpageComponent implements OnInit {
             () => {
                 this.userService.login(newUser).then(
                     e => {
-                        console.log(e);
                         localStorage.setItem("token", e?.data.user[1]["Jwt-Token"][0]);
                         localStorage.setItem("id", e?.data.user[0].id);
                         localStorage.setItem("pseudo", e?.data.user[0].pseudo);
@@ -334,9 +373,82 @@ export class MainpageComponent implements OnInit {
 
         this.salonService.ajouterMemberToSalon(this.salon, userId).then(
             e => {
-                this.refresh();
                 this.ajoutMembre = true;
             }
         )
+    }
+
+    isMyMessage(msg: Message) {
+        // @ts-ignore
+        return +localStorage.getItem("id") === msg.user.id;
+    }
+
+    onSendMessage() {
+        const formValue = this.chatForm.value;
+        const content = formValue["content"];
+
+        // @ts-ignore
+        this.listMembre?.forEach(e => {
+            // @ts-ignore
+            if (e.user.id === +localStorage.getItem("id")) {
+                this.salonService.addMessage(this.salon, e.id, content).then(
+                    e => {
+                        this.getTchat();
+                    }
+                );
+            }
+        });
+        formValue["content"] = "";
+    }
+
+    getDate(date: Date) {
+        return formatDate(date,'dd/MM/yyyy', 'fr');
+    }
+
+    canIValidate(tache: Task) {
+
+        if (tache.affectedMember === undefined || tache.affectedMember === null)
+            return false;
+
+        // @ts-ignore
+        return (tache.affectedMember.user.id === +localStorage.getItem("id") && !tache.done);
+    }
+
+    onValidateTask(tache: Task) {
+        this.listMembre?.forEach(
+            e => {
+                // @ts-ignore
+                if (e.user.id === +localStorage.getItem("id")) {
+                    this.salonService.validerTache(this.salon, e.id, tache).then(
+                        e => {
+                            this.selectSalon(this.salon.id);
+                        }
+                    );
+                }
+            }
+        );
+    }
+
+    affecterTache(tache: Task) {
+        this.tache = tache;
+        this.refresh();
+
+        this.affecteMembre = true;
+    }
+
+    onAffecterMembre() {
+        const formValue = this.affecteForm.value;
+        const membreId = +formValue["user"];
+
+        this.salonService.affectMemberToTask(this.salon, membreId, this.tache).then(
+            e => {
+                this.refresh();
+                this.selectSalon(this.salon.id);
+            }
+        );
+    }
+
+    hasToAffect(tashe: Task) {
+        return ((tashe.affectedMember === undefined || tashe.affectedMember === null) && this.amIHost() && !tashe.done);
     }
 }

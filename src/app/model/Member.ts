@@ -3,7 +3,8 @@ import {User} from "./User";
 import {Presence} from "./Presence";
 
 export class Member {
-    constructor(public salon: Salon,
+    constructor(public id: number,
+                public salon: Salon,
                 public user: User,
                 public presence: Presence) {
     }
